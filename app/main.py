@@ -3,10 +3,13 @@ from app.db.base import Base
 from app.db.session import engine
 
 # Import routers (placeholders, you'll define these endpoints later)
-# from app.api.api import api_router
+from app.api.api import api_router
 
 def create_tables():
     Base.metadata.create_all(bind=engine)
+
+def drop_tables():
+    Base.metadata.drop_all(bind=engine)
 
 def get_application() -> FastAPI:
     app = FastAPI(
@@ -16,10 +19,14 @@ def get_application() -> FastAPI:
     )
 
     # Include your API routers here
-    # app.include_router(api_router, prefix="/api/v1")
+    app.include_router(api_router, prefix="/api/v1")
+
+    # drop_tables()
 
     # Create tables on startup (only for initial/demo purposes)
     create_tables()
+
+
 
     return app
 
