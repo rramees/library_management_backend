@@ -1,0 +1,65 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+ENV/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest Cache
+.pytest_cache/
+
+# FastAPI/Uvicorn Logs
+*.log
+
+# Environment Variables File
+.env
+
+# IDE & Editor-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Jupyter Notebook checkpoints (if applicable)
+.ipynb_checkpoints
+
+# Coverage reports
+htmlcov/
+.coverage
+
+# Python distribution/build files
+build/
+dist/
+*.egg-info/
+
+# Docker
+*.dockerfile
+*.tar
+*.tar.gz
+
+# Database files
+*.sqlite3
+
+# Miscellaneous
+*.zip
+*.rar
+
+# Logs
+logs/
+
+# db files
+
+*.sql
+
+
