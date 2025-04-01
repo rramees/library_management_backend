@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey, Index
 from app.db.base import Base
 
 class BookAuthor(Base):
@@ -6,3 +6,7 @@ class BookAuthor(Base):
 
     book_id = Column(Integer, ForeignKey("books.id"), primary_key=True)
     author_id = Column(Integer, ForeignKey("authors.id"), primary_key=True)
+    
+    __table_args__ = (
+        Index('idx_book_author', book_id, author_id),
+    )
