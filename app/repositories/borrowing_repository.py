@@ -47,3 +47,7 @@ def return_book(db: Session, user_id: int, book_id: int):
     db.refresh(borrowing)
     return borrowing
 
+def get_user_borrow_history(db: Session, user_id: int):
+    return db.query(Borrowing).filter(
+        Borrowing.user_id == user_id
+    ).order_by(Borrowing.borrow_date.desc()).all()

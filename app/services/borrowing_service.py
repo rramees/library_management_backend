@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-from app.repositories.borrowing_repository import borrow_book, has_active_borrow, return_book
+from app.repositories.borrowing_repository import borrow_book, get_user_borrow_history, has_active_borrow, return_book
 from app.db.models.user import User, UserRole
 from app.db.models.book import Book
 
@@ -30,3 +30,6 @@ def process_return(db: Session, user: User, book_id: int):
         raise HTTPException(status_code=404, detail="No active borrow record for this book")
 
     return borrowing
+
+def fetch_borrow_history(db: Session, user_id: int):
+    return get_user_borrow_history(db, user_id)

@@ -10,6 +10,12 @@ class UserBase(BaseModel):
     role: str
     status: Optional[str] = None
 
+class UserPublic(BaseModel):
+    id: int
+    username: str
+    full_name: str
+    email: EmailStr
+
 class UserCreate(UserBase):
     pass
 
