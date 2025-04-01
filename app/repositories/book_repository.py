@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.db.models.book import Book
-from app.schemas.book_schema import BookCreate
+from app.schemas.book_schema import BookCreate, BookUpdate
 from typing import List, Optional
 
 def create_book(db: Session, book_data: BookCreate) -> Book:
@@ -34,3 +34,22 @@ def search_books(
     total_items = query.count()
 
     return query.offset(offset).limit(page_size).all() , total_items
+
+def update_book(db: Session, book_id: int, updates: BookUpdate) -> Optional[Book]:
+    book = db.query(Book).filter(Book.id == book_id).first()
+    if not book:
+        return None
+
+    data = updates.model_dump(exclude_unset=True)
+
+    if "total_copies" in data:
+        new_total = data["total_copies"]
+        if book.available_copies > new_total:
+            raise ValueError("available_copies cannot exceed total_copies")
+
+    for key, value in data.items():
+        setattr(book, key, value)
+
+    db.commit()
+    db.refresh(book)
+    return book

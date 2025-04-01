@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status , Query
 from sqlalchemy.orm import Session
-from app.schemas.book_schema import BookCreate
-from app.services.book_service import add_book, get_filtered_books
+from app.db.models.user import User
+from app.schemas.book_schema import BookCreate, BookResponse, BookUpdate
+from app.services.book_service import add_book, get_filtered_books, process_book_update
 from app.core.security import get_current_user, require_librarian
 from app.db.session import get_db
 from typing import Optional
@@ -42,3 +43,13 @@ def search_books_api(
     )
 
     return result
+
+@router.put("/{book_id}", response_model=BookResponse)
+def update_book_by_id(
+    book_id: int,
+    updates: BookUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_librarian)
+):
+    updated = process_book_update(db, book_id, updates)
+    return updated

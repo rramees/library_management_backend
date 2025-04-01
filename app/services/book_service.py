@@ -1,7 +1,8 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional, Dict
-from app.schemas.book_schema import BookCreate
-from app.repositories.book_repository import create_book , search_books
+from app.schemas.book_schema import BookCreate, BookUpdate
+from app.repositories.book_repository import create_book , search_books, update_book
 
 def add_book(db: Session, book_data: BookCreate):
     return create_book(db, book_data)
@@ -36,3 +37,12 @@ def get_filtered_books(
             "total_items": total_items
         }
     }
+
+def process_book_update(db: Session, book_id: int, updates: BookUpdate):
+    try:
+        updated = update_book(db, book_id, updates)
+        if not updated:
+            raise HTTPException(status_code=404, detail="Book not found")
+        return updated
+    except ValueError as ve:
+        raise HTTPException(status_code=400, detail=str(ve))
