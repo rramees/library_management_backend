@@ -4,7 +4,7 @@ from typing import Optional
 from app.core.security import hash_password, generate_api_key
 from app.schemas.user_schema import UserResponse
 
-def create_user(db: Session, username: str, password: str, email: str, full_name: str):
+def create_user(db: Session, username: str, password: str, email: str, full_name: str , phone_no: str, role: str) -> User:
     hashed_pw = hash_password(password)
     api_key = generate_api_key()
     
@@ -13,6 +13,8 @@ def create_user(db: Session, username: str, password: str, email: str, full_name
         password=hashed_pw,
         email=email,
         full_name=full_name,
+        phone_no=phone_no,
+        role=role,
         api_key=api_key
     )
     

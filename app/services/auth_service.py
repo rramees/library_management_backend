@@ -10,7 +10,9 @@ def register_user(db: Session, user_create: UserCreate):
         username=user_create.username,
         password=user_create.password,
         email=user_create.email,
-        full_name=user_create.full_name
+        full_name=user_create.full_name,
+        phone_no=user_create.phone_no,
+        role=user_create.role,
     )
     
     jwt_token = create_jwt_token(user.username)
