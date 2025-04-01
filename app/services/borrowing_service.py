@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-from app.repositories.borrowing_repository import borrow_book, has_active_borrow
+from app.repositories.borrowing_repository import borrow_book, has_active_borrow, return_book
 from app.db.models.user import User, UserRole
 from app.db.models.book import Book
 
@@ -19,4 +19,14 @@ def process_borrowing(db: Session, user: User, book_id: int):
         raise HTTPException(status_code=400, detail="You have already borrowed this book")
 
     borrowing = borrow_book(db, user, book)
+    return borrowing
+
+def process_return(db: Session, user: User, book_id: int):
+    if user.role != UserRole.USER:
+        raise HTTPException(status_code=403, detail="Only users can return books")
+
+    borrowing = return_book(db, user.id, book_id)
+    if not borrowing:
+        raise HTTPException(status_code=404, detail="No active borrow record for this book")
+
     return borrowing

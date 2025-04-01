@@ -24,3 +24,26 @@ def has_active_borrow(db: Session, user_id: int, book_id: int) -> bool:
         Borrowing.book_id == book_id,
         Borrowing.status == BorrowStatus.BORROWED
     ).first() is not None
+
+def return_book(db: Session, user_id: int, book_id: int):
+    from app.db.models.borrowing import BorrowStatus
+    from datetime import datetime
+
+    borrowing = db.query(Borrowing).filter(
+        Borrowing.user_id == user_id,
+        Borrowing.book_id == book_id,
+        Borrowing.status == BorrowStatus.BORROWED
+    ).first()
+
+    if not borrowing:
+        return None
+
+    borrowing.status = BorrowStatus.RETURNED
+    borrowing.return_date = datetime.utcnow()
+
+    borrowing.book.available_copies += 1
+
+    db.commit()
+    db.refresh(borrowing)
+    return borrowing
+
