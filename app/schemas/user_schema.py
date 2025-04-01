@@ -11,6 +11,16 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     pass
 
+class UserResponse(UserBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
 class RegisterResponse(BaseModel):
     access_token: str
     api_key: str
