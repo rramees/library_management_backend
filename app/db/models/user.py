@@ -19,6 +19,6 @@ class User(Base):
     full_name = Column(String(100), nullable=False)
     email = Column(String(255), unique=True, nullable=False, index=True)
     phone_no = Column(String(20), unique=True)
-    role = Column(Enum(UserRole), nullable=False, default=UserRole.USER)
+    role = Column(Enum(UserRole, values_callable=lambda obj: [e.value for e in obj]), nullable=False, default=UserRole.USER)
     api_key = Column(String(255), unique=True, index=True)
-    status = Column(Enum(UserStatus), default=UserStatus.ACTIVE)
+    status = Column(Enum(UserStatus, values_callable=lambda obj: [e.value for e in obj]), default=UserStatus.ACTIVE)

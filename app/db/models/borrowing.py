@@ -15,10 +15,10 @@ class Borrowing(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     book_id = Column(Integer, ForeignKey("books.id"), nullable=False)
-    borrow_date = Column(DateTime, default=datetime.utcnow)
-    due_date = Column(DateTime, default=lambda: datetime.utcnow() + timedelta(days=14))
+    borrow_date = Column(DateTime, default=datetime.now)
+    due_date = Column(DateTime, default=lambda: datetime.now() + timedelta(days=14))
     return_date = Column(DateTime, nullable=True)
-    status = Column(Enum(BorrowStatus), default=BorrowStatus.BORROWED)
+    status = Column(Enum(BorrowStatus, values_callable=lambda obj: [e.value for e in obj]), default=BorrowStatus.BORROWED)
 
     user = relationship("User", backref="borrowings")
     book = relationship("Book", backref="borrowings")
