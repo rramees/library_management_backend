@@ -1,16 +1,19 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.schemas.borrowing_schema import BorrowingHistoryResponse
 from app.services.borrowing_service import fetch_borrow_history, process_borrowing, process_return
 from app.core.security import get_current_user
 from app.db.models.user import User, UserRole
+from app.core.limiter import limiter 
 
 router = APIRouter()
 
 @router.post("/borrow/{book_id}")
+@limiter.limit("10/minute")
 def borrow_book_api(
+    request: Request,
     book_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -23,7 +26,9 @@ def borrow_book_api(
     }
 
 @router.post("/return/{book_id}")
+@limiter.limit("10/minute")
 def return_book_api(
+    request: Request,
     book_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
@@ -42,7 +47,9 @@ def get_my_borrowing_history(
     return fetch_borrow_history(db, current_user.id)
 
 @router.get("/history/{user_id}", response_model=List[BorrowingHistoryResponse])
+@limiter.limit("10/minute")
 def get_user_borrowing_history(
+    request: Request,
     user_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)

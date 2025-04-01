@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from app.db.base import Base
 from app.db.session import engine
-
-# Import routers (placeholders, you'll define these endpoints later)
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.middleware import SlowAPIMiddleware
+from app.core.limiter import limiter 
 from app.api.api import api_router
+
 
 def create_tables():
     Base.metadata.create_all(bind=engine)
@@ -18,12 +21,16 @@ def get_application() -> FastAPI:
         version="1.0.0"
     )
 
-    # Include your API routers here
+    # Register limiter and exception handler
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_middleware(SlowAPIMiddleware)
+
+
+    # Include routers
     app.include_router(api_router, prefix="/api/v1")
 
     # drop_tables()
-
-    # Create tables on startup (only for initial/demo purposes)
     create_tables()
 
 

@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status , Query
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException, Request, status , Query
 from app.db.models.user import User
 from app.schemas.book_schema import BookCreate, BookResponse, BookUpdate
 from app.services.book_service import add_book, get_filtered_books, process_book_update
 from app.core.security import get_current_user, require_librarian
 from app.db.session import get_db
+from app.core.limiter import limiter 
+from sqlalchemy.orm import Session
 from typing import Optional
 
 router = APIRouter()
@@ -22,7 +23,9 @@ def add_new_book(
         raise HTTPException(status_code=400, detail=f"Error adding book: {str(e)}")
 
 @router.get("/search")
+@limiter.limit("20/minute")
 def search_books_api(
+    request: Request,
     title: Optional[str] = Query(None),
     publisher: Optional[str] = Query(None),
     language: Optional[str] = Query(None),
