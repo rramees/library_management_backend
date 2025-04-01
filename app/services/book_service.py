@@ -1,6 +1,38 @@
 from sqlalchemy.orm import Session
+from typing import Optional, Dict
 from app.schemas.book_schema import BookCreate
-from app.repositories.book_repository import create_book
+from app.repositories.book_repository import create_book , search_books
 
 def add_book(db: Session, book_data: BookCreate):
     return create_book(db, book_data)
+
+def get_filtered_books(
+    db: Session,
+    title: Optional[str] = None,
+    publisher: Optional[str] = None,
+    language: Optional[str] = None,
+    category_id: Optional[int] = None,
+    page_no: int = 1,
+    page_size: int = 10
+) -> Dict:
+    books, total_items = search_books(
+        db,
+        title=title,
+        publisher=publisher,
+        language=language,
+        category_id=category_id,
+        page_no=page_no,
+        page_size=page_size
+    )
+
+    total_pages = (total_items + page_size - 1) // page_size
+
+    return {
+        "books": books,
+        "pagination": {
+            "page_no": page_no,
+            "page_size": page_size,
+            "total_pages": total_pages,
+            "total_items": total_items
+        }
+    }
