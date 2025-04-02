@@ -14,6 +14,7 @@ A clean, modular backend system for managing library operations built using **Fa
 - **API Key Authentication** – for persistent tokens
 - **Rate Limiting** – using `slowapi`
 - **Modular Layers** – API ➞ Service ➞ Repository ➞ DB
+- **Docker** – containerized deployment
 
 ---
 
@@ -31,6 +32,8 @@ library_management_backend/
 │   ├── repositories/       # DB queries
 │   └── utils/              # Logging, error handling
 │
+├── Dockerfile              # Docker configuration
+├── docker-compose.yml      # Multi-container Docker config
 ├── requirements.txt
 ├── main.py                 # App entrypoint
 └── README.md               # You are here!
@@ -128,6 +131,41 @@ You can modify this in individual routes using:
 
    ```bash
    uvicorn app.main:app --reload
+   ```
+
+---
+
+## 🐳 Running with Docker
+
+1. **Build and start the containers**
+
+   ```bash
+   docker-compose up --build
+   ```
+
+   This will start both the FastAPI application and PostgreSQL database.
+
+2. **Access the API**
+
+   The API will be available at:
+
+   ```bash
+   http://localhost:8000
+   ```
+
+3. **Stopping the containers**
+
+   ```bash
+   docker-compose down
+   ```
+
+4. **Reset the database**
+
+   To completely reset the database, including its volume:
+
+   ```bash
+
+   docker-compose down -v
    ```
 
 ---
