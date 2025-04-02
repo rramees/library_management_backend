@@ -6,7 +6,6 @@ from jose import jwt, JWTError
 from app.db.models.user import User, UserRole, UserStatus
 from app.db.session import get_db
 from passlib.context import CryptContext
-from jose import jwt
 from datetime import datetime, timedelta
 import secrets
 
