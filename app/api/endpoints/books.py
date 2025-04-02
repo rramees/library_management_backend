@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Request, status , Query
+from fastapi import APIRouter, Depends, HTTPException, Request, status, Query
 from app.db.models.user import User
 from app.schemas.book_schema import BookCreate, BookResponse, BookUpdate
 from app.services.book_service import add_book, get_filtered_books, process_book_update
@@ -29,7 +29,7 @@ def search_books_api(
     title: Optional[str] = Query(None),
     publisher: Optional[str] = Query(None),
     language: Optional[str] = Query(None),
-    category_id: Optional[int] = Query(None),
+    category: Optional[str] = Query(None),
     page_no: int = Query(1, ge=1),
     page_size: int = Query(10, ge=1, le=100),
     db: Session = Depends(get_db),
@@ -40,7 +40,7 @@ def search_books_api(
         title=title,
         publisher=publisher,
         language=language,
-        category_id=category_id,
+        category=category,
         page_no=page_no,
         page_size=page_size
     )

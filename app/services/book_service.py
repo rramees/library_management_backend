@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional, Dict
 from app.schemas.book_schema import BookCreate, BookUpdate
-from app.repositories.book_repository import create_book , search_books, update_book
+from app.repositories.book_repository import create_book, search_books, update_book
 
 def add_book(db: Session, book_data: BookCreate):
     return create_book(db, book_data)
@@ -12,7 +12,7 @@ def get_filtered_books(
     title: Optional[str] = None,
     publisher: Optional[str] = None,
     language: Optional[str] = None,
-    category_id: Optional[int] = None,
+    category: Optional[str] = None,
     page_no: int = 1,
     page_size: int = 10
 ) -> Dict:
@@ -21,7 +21,7 @@ def get_filtered_books(
         title=title,
         publisher=publisher,
         language=language,
-        category_id=category_id,
+        category=category,
         page_no=page_no,
         page_size=page_size
     )
