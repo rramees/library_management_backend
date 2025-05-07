@@ -4,21 +4,10 @@ from app.core.config import settings
 # Configure the API key
 genai.configure(api_key=settings.GOOGLE_API_KEY)
 
-def list_available_models():
-    try:
-        models = genai.list_models()
-        for model in models:
-            print(f"Model ID: {model.name}")  # Use dot notation
-            print(f"Supported Methods: {model.supported_generation_methods}")  # Use dot notation
-            print("-" * 40)
-    except Exception as e:
-        print(f"Error listing models: {str(e)}")
 
-# Call the function
-list_available_models()
 
 def generate_sql_query(natural_language_query: str) -> str:
-    list_available_models()
+    
     """
     Use Google's Gemini (PaLM API) to generate an SQL query from a natural language query.
     """
