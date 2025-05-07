@@ -2,7 +2,8 @@ from app.core.config import settings
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, APIKeyHeader
 from sqlalchemy.orm import Session
-from jose import jwt, JWTError
+import jwt  
+from jwt import ExpiredSignatureError, InvalidTokenError 
 from app.db.models.user import User, UserRole, UserStatus
 from app.db.session import get_db
 from passlib.context import CryptContext
@@ -26,16 +27,19 @@ def generate_api_key():
     return secrets.token_urlsafe(32)
 
 def create_jwt_token(username: str, expires_delta: timedelta = timedelta(hours=24)):
-    expire = datetime.now() + expires_delta
+    expire = datetime.utcnow() + expires_delta
     to_encode = {"exp": expire, "sub": username}
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
 
 def decode_jwt(token: str) -> str:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload.get("sub")
-    except JWTError:
-        return None
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
 async def get_current_user(
     token: HTTPAuthorizationCredentials = Depends(bearer_scheme),

@@ -25,6 +25,7 @@ def register(request: Request,user_create: UserCreate, db: Session = Depends(get
 def login(request: Request,login_data: UserLogin, db: Session = Depends(get_db)):
     try:
         result = login_user(db, login_data)
+        print(f"Login result: {result}")
         return RegisterResponse(
             access_token=result["access_token"],
             api_key=result["api_key"]
